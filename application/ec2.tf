@@ -1,11 +1,11 @@
 resource "aws_lb" "app" {
-  name            = "${var.name_environment}-lb"
-  security_groups = [aws_security_group.lb.id]
+  name            = var.name_environment
+  security_groups = [aws_security_group.app_lb.id]
   subnets         = var.vpc_public_subnets
 }
 
 resource "aws_lb_target_group" "app" {
-  name        = "${var.name_environment}-lb-tg"
+  name        = var.name_environment
   port        = 80
   protocol    = "HTTP"
   target_type = "ip"

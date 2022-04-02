@@ -1,12 +1,12 @@
-resource "aws_security_group" "ecs" {
-  name   = "${var.name_environment}-sg-ecs"
+resource "aws_security_group" "app_ecs" {
+  name   = "${var.name_environment}-ecs"
   vpc_id = var.vpc_id
 
   ingress {
     from_port       = 80
     to_port         = 80
     protocol        = "TCP"
-    security_groups = [aws_security_group.lb.id]
+    security_groups = [aws_security_group.app_lb.id]
   }
 
   egress {
@@ -17,8 +17,8 @@ resource "aws_security_group" "ecs" {
   }
 }
 
-resource "aws_security_group" "lb" {
-  name   = "${var.name_environment}-sg-lb"
+resource "aws_security_group" "app_lb" {
+  name   = "${var.name_environment}-lb"
   vpc_id = var.vpc_id
 
   ingress {

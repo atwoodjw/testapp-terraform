@@ -18,7 +18,7 @@ module "ecs" {
 }
 
 resource "aws_ecs_task_definition" "app" {
-  family                   = var.name_environment
+  family                   = "${var.name_environment}-app"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = var.ecs_cpu
@@ -39,8 +39,8 @@ resource "aws_ecs_task_definition" "app" {
         logDriver : "awslogs"
         options : {
           "awslogs-region" : "us-east-1"
-          "awslogs-group" : "/ecs/${var.name}/${var.environment}"
-          "awslogs-stream-prefix" : "ecs"
+          "awslogs-group" : "/ecs/${var.name_environment}"
+          "awslogs-stream-prefix" : "app"
         }
       }
     }
@@ -55,7 +55,7 @@ resource "aws_ecs_task_definition" "app" {
 }
 
 resource "aws_ecs_service" "app" {
-  name            = var.name_environment
+  name            = "app"
   cluster         = module.ecs.ecs_cluster_id
   task_definition = aws_ecs_task_definition.app.arn
   desired_count   = 1
@@ -70,10 +70,10 @@ resource "aws_ecs_service" "app" {
 
   network_configuration {
     subnets         = var.vpc_private_subnets
-    security_groups = [aws_security_group.ecs.id]
+    security_groups = [aws_security_group.app_ecs.id]
   }
 
   lifecycle {
-    ignore_changes = [desired_count]
+    ignore_changes = [task_definition, desired_count]
   }
 }

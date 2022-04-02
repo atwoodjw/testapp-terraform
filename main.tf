@@ -17,17 +17,19 @@ locals {
 
 module "network" {
   source           = "./network"
-  name             = var.name
-  environment      = local.environment
   name_environment = local.name_environment
 }
 
 module "application" {
   source              = "./application"
-  name                = var.name
-  environment         = local.environment
   name_environment    = local.name_environment
   vpc_id              = module.network.vpc_id
   vpc_private_subnets = module.network.vpc_private_subnets
   vpc_public_subnets  = module.network.vpc_public_subnets
+}
+
+module "pipeline" {
+  source           = "./pipeline"
+  environment      = local.environment
+  name_environment = local.name_environment
 }
